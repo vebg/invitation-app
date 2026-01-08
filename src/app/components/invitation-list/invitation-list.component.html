@@ -1,0 +1,70 @@
+<div class="container mt-5">
+    <div class="text-center mb-5">
+        <h1 class="display-4 fw-bold text-dark mb-3">Find Your Invitation</h1>
+        <p class="lead text-secondary">Enter your unique code below to unlock your exclusive invitation.</p>
+    </div>
+
+    <div *ngIf="successMessage" class="alert alert-success shadow-sm text-center col-md-8 mx-auto mb-5" role="alert">
+        <i class="bi bi-check-circle-fill me-2"></i>{{ successMessage }}
+    </div>
+
+    <div class="row justify-content-center mb-5">
+        <div class="col-md-9 col-lg-7">
+            <div class="card border-0 shadow-lg p-2 search-card">
+                <div class="input-group">
+                    <span class="input-group-text bg-white border-0 ps-3">
+                        <i class="bi bi-search text-primary fs-4"></i>
+                    </span>
+                    <input type="text" class="form-control border-0 fs-4 py-3 ps-2"
+                        placeholder="Paste your code here..." [(ngModel)]="searchCode" (keyup.enter)="onSearch()"
+                        style="box-shadow: none;">
+                    <button class="btn btn-primary px-5 fw-bold fs-5 rounded-3 m-1" type="button" (click)="onSearch()"
+                        [disabled]="isLoading">
+                        {{ isLoading ? 'Checking...' : 'SEARCH' }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="error" class="alert alert-danger shadow-sm text-center col-md-8 mx-auto" role="alert">
+        <i class="bi bi-exclamation-octagon-fill me-2"></i>{{ error }}
+    </div>
+
+    <div *ngIf="!isLoading && !error && invitations.length > 0" class="row justify-content-center fade-in">
+        <div class="col-md-6 col-lg-5" *ngFor="let invitation of invitations">
+            <div class="card h-100 border-0 shadow-lg custom-card">
+                <div class="card-body p-4 text-center">
+                    <div class="mb-4">
+                        <div class="d-inline-block p-3 rounded-circle bg-light mb-3">
+                            <i class="bi bi-envelope-open-heart text-primary display-4"></i>
+                        </div>
+                        <h3 class="fw-bold mb-1">{{ invitation.projectKey }}/{{ invitation.code }}</h3>
+                        <span class="badge rounded-pill px-3 py-2 mt-2"
+                            [ngClass]="{'bg-success': invitation.status === 'Accepted', 'bg-warning text-dark': invitation.status === 'Pending'}">
+                            {{ invitation.status }}
+                        </span>
+                    </div>
+
+                    <p class="card-text text-muted mb-4">
+                        <span *ngIf="invitation.status === 'Pending'">You're on the list! Confirm your attendance
+                            below.</span>
+                        <span *ngIf="invitation.status === 'Accepted'">You're all set! We look forward to seeing
+                            you.</span>
+                    </p>
+
+                    <div class="d-grid gap-2">
+                        <button *ngIf="invitation.status === 'Pending'" (click)="onAccept(invitation)"
+                            class="btn btn-primary btn-lg shadow-sm">
+                            <i class="bi bi-check-lg me-2"></i>Accept Invitation
+                        </button>
+                        <button *ngIf="invitation.status === 'Accepted'" class="btn btn-success btn-lg shadow-sm"
+                            disabled>
+                            <i class="bi bi-check-circle-fill me-2"></i>Accepted
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
